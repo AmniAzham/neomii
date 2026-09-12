@@ -408,17 +408,30 @@ with dashboard_tab:
 
                     with st.container(border=True):
                         # Product photo
-                        if (
-                            product["image_path"]
-                            and os.path.exists(product["image_path"])
-                        ):
-                            st.image(
-                                product["image_path"],
-                                use_container_width=True
+                        image_path = product["image_path"]
+
+                        if image_path:
+                            image_path = image_path.replace("\\", "/")
+                            full_image_path = os.path.join(
+                                os.path.dirname(os.path.abspath(__file__)),
+                                image_path
                             )
+
+                            if os.path.exists(full_image_path):
+                                with open(full_image_path, "rb") as image_file:
+                                    image_bytes = image_file.read()
+                                st.image(
+                                    image_bytes,
+                                    use_container_width=True
+                                )
+                            else:
+                                st.markdown(
+                                    "<div style='height:170px;display:flex;align-items:center;justify-content:center;'></div>",
+                                    unsafe_allow_html=True
+                                )
                         else:
                             st.markdown(
-                                "<div style='height:170px;display:flex;align-items:center;justify-content:center;font-size:52px;'></div>",
+                                "<div style='height:170px;display:flex;align-items:center;justify-content:center;'></div>",
                                 unsafe_allow_html=True
                             )
 
@@ -1099,11 +1112,13 @@ with products_tab:
                         )
 
                         if os.path.exists(full_image_path):
-                            st.image(full_image_path, width=100)
+                            with open(full_image_path, "rb") as image_file:
+                                image_bytes = image_file.read()
+                            st.image(image_bytes, width=100)
                         else:
-                            st.write("Image file not found")
+                            st.caption("Image file not found")
                     else:
-                        st.write("No image")
+                        st.caption("No image")
 
                 with col_main:
                     st.markdown(f"### {product['design']}")
