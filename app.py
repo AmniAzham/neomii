@@ -1091,9 +1091,9 @@ with products_tab:
                 with col_image:
                     if (
                         product["image_path"]
-                        and os.path.exists(product["image_path"])
+                        and os.path.exists(product["image_path"].replace("\\", "/"))
                     ):
-                        st.image(product["image_path"], width=100)
+                        st.image(product["image_path"].replace("\\", "/"), width=100)
                     else:
                         st.write("")
 
