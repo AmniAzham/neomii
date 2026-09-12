@@ -1089,13 +1089,21 @@ with products_tab:
                 col_image, col_main, col_actions = st.columns([1, 5, 2])
 
                 with col_image:
-                    if (
-                        product["image_path"]
-                        and os.path.exists(product["image_path"].replace("\\", "/"))
-                    ):
-                        st.image(product["image_path"].replace("\\", "/"), width=100)
+                    image_path = product["image_path"]
+
+                    if image_path:
+                        image_path = image_path.replace("\\", "/")
+                        full_image_path = os.path.join(
+                            os.path.dirname(os.path.abspath(__file__)),
+                            image_path
+                        )
+
+                        if os.path.exists(full_image_path):
+                            st.image(full_image_path, width=100)
+                        else:
+                            st.write("Image file not found")
                     else:
-                        st.write("")
+                        st.write("No image")
 
                 with col_main:
                     st.markdown(f"### {product['design']}")
