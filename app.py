@@ -35,15 +35,16 @@ initialize_database()
 os.makedirs("product_images", exist_ok=True)
 os.makedirs("assets", exist_ok=True)
 
-APP_DIR = os.path.dirname(os.path.abspath(__file__))
-DEFAULT_LOGO_PATH = os.path.join(APP_DIR, "assets", "neomii_logo.png")
+BASE_DIR = Path(__file__).resolve().parent
+APP_DIR = BASE_DIR
+
+DEFAULT_LOGO = BASE_DIR / "assets" / "shop_logo.png"
 
 st.set_page_config(
     page_title="Neomii",
-    page_icon=DEFAULT_LOGO_PATH if os.path.exists(DEFAULT_LOGO_PATH) else None,
+    page_icon=str(DEFAULT_LOGO) if DEFAULT_LOGO.exists() else "🛍️",
     layout="wide"
 )
-
 # ============================================================
 # MATERIAL LOGIC
 # ============================================================
