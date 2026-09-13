@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import pandas as pd
 import streamlit as st
 
@@ -247,24 +248,15 @@ def show_modal_breakdown(product):
 settings = get_shop_settings()
 
 shop_name = "Neomii"
-logo_path = None
 
 if settings:
     shop_name = settings["shop_name"]
-    logo_path = settings["logo_path"]
 
 col_logo, col_title = st.columns([1, 6])
 
 with col_logo:
-    if logo_path:
-        full_logo_path = (
-            logo_path
-            if os.path.isabs(logo_path)
-            else os.path.join(APP_DIR, logo_path)
-        )
-
-        if os.path.exists(full_logo_path):
-            st.image(full_logo_path, width=90)
+    if DEFAULT_LOGO.exists():
+        st.image(str(DEFAULT_LOGO), width=90)
 
 with col_title:
     st.title(shop_name)
