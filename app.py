@@ -34,9 +34,12 @@ initialize_database()
 os.makedirs("product_images", exist_ok=True)
 os.makedirs("assets", exist_ok=True)
 
+APP_DIR = os.path.dirname(os.path.abspath(__file__))
+DEFAULT_LOGO_PATH = os.path.join(APP_DIR, "assets", "neomii_logo.png")
+
 st.set_page_config(
     page_title="Neomii",
-    page_icon="",
+    page_icon=DEFAULT_LOGO_PATH if os.path.exists(DEFAULT_LOGO_PATH) else None,
     layout="wide"
 )
 
@@ -253,17 +256,19 @@ if settings:
 col_logo, col_title = st.columns([1, 6])
 
 with col_logo:
-    if logo_path and os.path.exists(logo_path):
-        st.image(logo_path, width=100)
-    else:
-        st.markdown("# ")
+    if logo_path:
+        full_logo_path = (
+            logo_path
+            if os.path.isabs(logo_path)
+            else os.path.join(APP_DIR, logo_path)
+        )
+
+        if os.path.exists(full_logo_path):
+            st.image(full_logo_path, width=90)
 
 with col_title:
     st.title(shop_name)
-    st.caption(
-        "Smart Inventory, Cost & Logistics Assistant "
-        "for Small Online Sellers"
-    )
+    st.caption("Inventory • Costs • Sales")
 
 st.divider()
 
@@ -1802,14 +1807,22 @@ with settings_tab:
         value=current_name
     )
 
+    current_logo_full_path = None
+    if current_logo:
+        current_logo_full_path = (
+            current_logo
+            if os.path.isabs(current_logo)
+            else os.path.join(APP_DIR, current_logo)
+        )
+
     if (
-        current_logo
-        and os.path.exists(current_logo)
+        current_logo_full_path
+        and os.path.exists(current_logo_full_path)
     ):
         st.write("Current Logo")
 
         st.image(
-            current_logo,
+            current_logo_full_path,
             width=120
         )
 
@@ -1852,8 +1865,13 @@ with settings_tab:
                 safe_logo_name
             )
 
+            logo_write_path = os.path.join(
+                APP_DIR,
+                logo_to_save
+            )
+
             with open(
-                logo_to_save,
+                logo_write_path,
                 "wb"
             ) as f:
                 f.write(
